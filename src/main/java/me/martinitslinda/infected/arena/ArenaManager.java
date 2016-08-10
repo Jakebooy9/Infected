@@ -3,13 +3,11 @@ package me.martinitslinda.infected.arena;
 import me.martinitslinda.infected.Infected;
 import me.martinitslinda.infected.exception.ArenaException;
 import me.martinitslinda.infected.mysql.MySQL;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.sql.*;
 import java.util.*;
-
 import java.util.stream.Collectors;
 
 public class ArenaManager{
@@ -65,7 +63,9 @@ public class ArenaManager{
 
         while(selection.size()<(arenas.size()>=5 ? 5 : arenas.size())){
             Arena arena=getArenas().get(random.nextInt(getArenas().size()));
-            if(!(arena.isDisabled()))selection.add(arena);
+            if(!(arena.isDisabled())){
+                selection.add(arena);
+            }
         }
 
         setSelection(new ArrayList<>(selection));
@@ -197,7 +197,6 @@ public class ArenaManager{
         //TODO: Reselect arena's so there's no future errors.
 
     }
-
 
 
 }

@@ -5,11 +5,10 @@ import org.bukkit.command.CommandSender;
 
 public abstract class InfectedCommand{
 
+    protected Infected plugin=Infected.getPlugin();
     private String name;
     private String permission;
     private boolean console;
-
-    protected Infected plugin=Infected.getPlugin();
 
     public InfectedCommand(String name, String permission, boolean console){
         this.name=name;

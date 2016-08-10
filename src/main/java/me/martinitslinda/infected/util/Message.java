@@ -17,6 +17,17 @@ public class Message{
         this.message=messages.get(key);
     }
 
+    public static Message get(String key){
+        return new Message(key);
+    }
+
+    public static void load(FileConfiguration config){
+        messages.clear();
+
+        config.getConfigurationSection("messages").getKeys(false).stream()
+                .forEach(message->messages.put(message, ChatUtil.colorize(config.getString("messages."+message))));
+    }
+
     public Message replace(CharSequence replace, CharSequence replacement){
         this.message=message.replace(replace, replacement);
         return this;
@@ -46,17 +57,6 @@ public class Message{
         if(entity!=null){
             entity.sendMessage(message);
         }
-    }
-
-    public static Message get(String key){
-        return new Message(key);
-    }
-
-    public static void load(FileConfiguration config){
-        messages.clear();
-
-        config.getConfigurationSection("messages").getKeys(false).stream()
-                .forEach(message->messages.put(message, ChatUtil.colorize(config.getString("messages."+message))));
     }
 
     @Override

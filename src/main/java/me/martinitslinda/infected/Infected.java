@@ -3,7 +3,6 @@ package me.martinitslinda.infected;
 import me.martinitslinda.infected.arena.ArenaManager;
 import me.martinitslinda.infected.exception.ArenaException;
 import me.martinitslinda.infected.mysql.MySQL;
-
 import me.martinitslinda.infected.util.Config;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,6 +17,20 @@ public class Infected extends JavaPlugin{
     private static Infected plugin;
 
     private boolean errorOnStartup;
+
+    public static Infected getPlugin(){
+        return plugin;
+    }
+
+    public static void setPlugin(Infected plugin){
+        Infected.plugin=plugin;
+    }
+
+    public static void debug(String message){
+
+        Infected.getPlugin().getLogger().log(Level.INFO, message);
+
+    }
 
     @Override
     public void onLoad(){
@@ -73,7 +86,7 @@ public class Infected extends JavaPlugin{
                         "spawn1z INT (11) NOT NULL DEFAULT '0', "+
                         "spawn2x INT (11) NOT NULL DEFAULT '0', "+
                         "spawn2y INT (11) NOT NULL DEFAULT '0', "+
-                        "spawn2z INT (11) NOT NULL DEFAULT '0'" +
+                        "spawn2z INT (11) NOT NULL DEFAULT '0'"+
                         "disabled TINYINT(1) NOT NULL DEFAULT '0'";
                 String statement="CREATE TABLE infected_arenas ("+values+");";
 
@@ -111,7 +124,7 @@ public class Infected extends JavaPlugin{
         try{
             ArenaManager.downloadArenas();
         }
-        catch(SQLException | ArenaException e){
+        catch(SQLException|ArenaException e){
             e.printStackTrace();
         }
 
@@ -123,20 +136,6 @@ public class Infected extends JavaPlugin{
     public void onDisable(){
 
         MySQL.close();
-
-    }
-
-    public static Infected getPlugin(){
-        return plugin;
-    }
-
-    public static void setPlugin(Infected plugin){
-        Infected.plugin=plugin;
-    }
-
-    public static void debug(String message){
-
-        Infected.getPlugin().getLogger().log(Level.INFO, message);
 
     }
 

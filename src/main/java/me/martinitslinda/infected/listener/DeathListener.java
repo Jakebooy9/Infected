@@ -2,7 +2,6 @@ package me.martinitslinda.infected.listener;
 
 import me.martinitslinda.infected.player.InfectedPlayer;
 import me.martinitslinda.infected.player.PlayerManager;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -27,7 +26,9 @@ public class DeathListener implements Listener{
 
             player.setDeaths(player.getDeaths()+1);
 
-            if(!(player.isInfected())) player.setInfected(true);
+            if(!(player.isInfected())){
+                player.setInfected(true);
+            }
             if(killer!=null){
                 player.setTimesInfected(player.getTimesInfected()+1);
                 killer.setKillStreak(killer.getKillStreak()+1);

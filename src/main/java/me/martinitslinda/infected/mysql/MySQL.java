@@ -3,12 +3,7 @@ package me.martinitslinda.infected.mysql;
 import com.zaxxer.hikari.HikariDataSource;
 import me.martinitslinda.infected.Infected;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MySQL{
@@ -42,7 +37,9 @@ public class MySQL{
 
     public static Connection getConnection() throws SQLException{
         try{
-            if(source!=null&&!source.isClosed()) return source.getConnection();
+            if(source!=null&&!source.isClosed()){
+                return source.getConnection();
+            }
         }
         catch(SQLException e){
             e.printStackTrace();

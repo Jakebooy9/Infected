@@ -17,13 +17,13 @@ public class GameManager{
         if(getState()==GameState.LOBBY){
 
             if(getTicks()%15==0){
-                for(Player player: Bukkit.getOnlinePlayers()){
+                for(Player player : Bukkit.getOnlinePlayers()){
                     Message.get("start_game_countdown")
                             .replace("%remaining%", getTicks())
                             .sendTo(player);
                     player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
 
-                    for(Arena arena: ArenaManager.getSelection()){
+                    for(Arena arena : ArenaManager.getSelection()){
                         Message.get("arena_list_format")
                                 .replace("%arena%", arena.getName())
                                 .replace("%creator%", arena.getCreator())

@@ -3,7 +3,6 @@ package me.martinitslinda.infected.team;
 import me.martinitslinda.infected.player.InfectedPlayer;
 import org.bukkit.ChatColor;
 
-import java.util.List;
 import java.util.Set;
 
 public class Team{

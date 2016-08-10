@@ -1,7 +1,6 @@
 package me.martinitslinda.infected.listener;
 
 import me.martinitslinda.infected.Infected;
-
 import me.martinitslinda.infected.arena.Arena;
 import me.martinitslinda.infected.arena.ArenaManager;
 import me.martinitslinda.infected.game.GameManager;
@@ -11,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.inventory.InventoryView;
 
 public class JoinListener implements Listener{
 

@@ -1,23 +1,11 @@
 package me.martinitslinda.infected.arena;
 
-import com.flowpowered.nbt.*;
-import com.flowpowered.nbt.stream.NBTInputStream;
-
 import me.martinitslinda.infected.Infected;
 import me.martinitslinda.infected.player.InfectedPlayer;
-
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.zip.GZIPInputStream;
 
 public class Arena{
 

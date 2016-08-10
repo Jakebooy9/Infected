@@ -10,7 +10,6 @@ public class RespawnListener implements Listener{
     public void onRespawn(PlayerRespawnEvent event){
 
 
-
     }
 
 }

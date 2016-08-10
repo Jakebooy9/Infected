@@ -172,7 +172,9 @@ public class InfectedPlayer{
         player.setFireTicks(0);
 
         Entity entity=player.getPassenger();
-        if(entity!=null)entity.eject();
+        if(entity!=null){
+            entity.eject();
+        }
     }
 
 }
