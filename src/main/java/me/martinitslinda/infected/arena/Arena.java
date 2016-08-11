@@ -1,6 +1,5 @@
 package me.martinitslinda.infected.arena;
 
-import me.martinitslinda.infected.Infected;
 import me.martinitslinda.infected.player.InfectedPlayer;
 import org.bukkit.Location;
 
@@ -17,8 +16,6 @@ public class Arena{
 
     private boolean loaded;
     private boolean disabled;
-
-    private Infected plugin=Infected.getPlugin();
 
     private List<InfectedPlayer> voters=new ArrayList<>();
 

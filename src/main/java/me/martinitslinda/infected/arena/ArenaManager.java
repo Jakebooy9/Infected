@@ -14,6 +14,7 @@ public class ArenaManager{
 
     private static List<Arena> arenas=new ArrayList<>();
     private static List<Arena> selection=new ArrayList<>();
+    private static Arena arena=null;
     private static Infected plugin=Infected.getPlugin();
 
     public static void downloadArenas() throws SQLException, ArenaException{
@@ -90,6 +91,14 @@ public class ArenaManager{
 
     public static void setSelection(List<Arena> selection){
         ArenaManager.selection=selection;
+    }
+
+    public static Arena getArena(){
+        return arena;
+    }
+
+    public static void setArena(Arena arena){
+        ArenaManager.arena=arena;
     }
 
     public static Arena getById(int id){

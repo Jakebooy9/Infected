@@ -1,5 +1,6 @@
 package me.martinitslinda.infected.player;
 
+import me.martinitslinda.infected.event.PlayerKilledEvent;
 import me.martinitslinda.infected.mysql.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -112,12 +113,17 @@ public class PlayerManager{
         }
 
         players.put(uuid, pl);
-
         return pl;
+    }
+
+    public static void handleDeath(InfectedPlayer player, InfectedPlayer killer){
+
+
+        Bukkit.getServer().getPluginManager().callEvent(new PlayerKilledEvent(player, killer));
+
     }
 
     public Set<InfectedPlayer> getOnlinePlayers(){
         return Bukkit.getOnlinePlayers().stream().map((Function<Player, InfectedPlayer>) PlayerManager::getPlayer).collect(Collectors.toSet());
     }
-
 }
