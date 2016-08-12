@@ -11,30 +11,6 @@ public class MySQL{
     private static HikariDataSource source;
     private static Infected plugin=Infected.getPlugin();
 
-    public static String getUrl(){
-        return "jdbc:mysql://"+getHost()+":"+getPort()+"/"+getDatabase();
-    }
-
-    public static String getHost(){
-        return plugin.getConfig().getString("mysql.hostname");
-    }
-
-    public static int getPort(){
-        return plugin.getConfig().getInt("mysql.port");
-    }
-
-    public static String getDatabase(){
-        return plugin.getConfig().getString("mysql.database");
-    }
-
-    private static String getUsername(){
-        return plugin.getConfig().getString("mysql.user");
-    }
-
-    public static String getPassword(){
-        return plugin.getConfig().getString("mysql.password");
-    }
-
     public static Connection getConnection() throws SQLException{
         try{
             if(source!=null&&!source.isClosed()){
@@ -47,9 +23,9 @@ public class MySQL{
 
         source=new HikariDataSource();
 
-        source.setJdbcUrl(getUrl());
-        source.setUsername(getUsername());
-        source.setPassword(getPassword());
+        source.setJdbcUrl(plugin.getSettings().getJdbcUrl());
+        source.setUsername(plugin.getSettings().getUser());
+        source.setPassword(plugin.getSettings().getPassword());
         source.setMaximumPoolSize(10);
         source.setLeakDetectionThreshold(5000L);
 

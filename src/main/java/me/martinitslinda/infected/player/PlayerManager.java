@@ -116,14 +116,7 @@ public class PlayerManager{
         return pl;
     }
 
-    public static void handleDeath(InfectedPlayer player, InfectedPlayer killer){
-
-
-        Bukkit.getServer().getPluginManager().callEvent(new PlayerKilledEvent(player, killer));
-
-    }
-
-    public Set<InfectedPlayer> getOnlinePlayers(){
+    public static Set<InfectedPlayer> getOnlinePlayers(){
         return Bukkit.getOnlinePlayers().stream().map((Function<Player, InfectedPlayer>) PlayerManager::getPlayer).collect(Collectors.toSet());
     }
 }

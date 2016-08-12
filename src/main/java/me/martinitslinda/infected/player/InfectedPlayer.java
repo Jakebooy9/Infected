@@ -22,6 +22,7 @@ public class InfectedPlayer{
 
     private boolean isInfected;
     private boolean isSpectating;
+    private boolean isDebugging;
 
     private long totalPlayTime;
     private long joinTime;
@@ -120,6 +121,14 @@ public class InfectedPlayer{
 
     public void setSpectating(boolean spectating){
         isSpectating=spectating;
+    }
+
+    public boolean isDebugging(){
+        return isDebugging;
+    }
+
+    public void setDebugging(boolean debugging){
+        isDebugging=debugging;
     }
 
     public long getTotalPlayTime(){

@@ -23,7 +23,6 @@ public class DeathListener implements Listener{
             InfectedPlayer killed=PlayerManager.getPlayer(event.getEntity());
             InfectedPlayer killer=killed.getLastDamager();
 
-            PlayerManager.handleDeath(killed, killer);
         }
     }
 

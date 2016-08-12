@@ -3,7 +3,11 @@ package me.martinitslinda.infected;
 import me.martinitslinda.infected.arena.ArenaManager;
 import me.martinitslinda.infected.exception.ArenaException;
 import me.martinitslinda.infected.mysql.MySQL;
-import me.martinitslinda.infected.util.Config;
+import me.martinitslinda.infected.player.InfectedPlayer;
+import me.martinitslinda.infected.player.PlayerManager;
+import me.martinitslinda.infected.util.Settings;
+import me.martinitslinda.infected.util.Message;
+
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,6 +22,8 @@ public class Infected extends JavaPlugin{
 
     private boolean errorOnStartup;
 
+    private Settings settings;
+
     public static Infected getPlugin(){
         return plugin;
     }
@@ -28,7 +34,14 @@ public class Infected extends JavaPlugin{
 
     public static void debug(String message){
 
-        Infected.getPlugin().getLogger().log(Level.INFO, message);
+        if(Infected.getPlugin().getSettings().isDebugging())
+            Infected.getPlugin().getLogger().log(Level.INFO, message);
+
+        PlayerManager.getOnlinePlayers().stream()
+                .filter(InfectedPlayer::isDebugging)
+                .forEach(player -> Message.get("debug_message_format")
+                        .replace("%message%", message)
+                        .sendTo(player.getPlayer()));
 
     }
 
@@ -36,7 +49,8 @@ public class Infected extends JavaPlugin{
     public void onLoad(){
         setPlugin(this);
 
-        Config.load(this);
+        settings=new Settings();
+        getSettings().load();
 
         try(Connection connection=MySQL.getConnection()){
 
@@ -139,4 +153,7 @@ public class Infected extends JavaPlugin{
 
     }
 
+    public Settings getSettings(){
+        return settings;
+    }
 }
