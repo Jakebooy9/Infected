@@ -12,28 +12,26 @@ public class CommandHandler{
 
     private static List<InfectedCommand> commands=new ArrayList<>();
 
-    public static void handle(CommandSender sender, Command cmd, String[] args){
+    public static boolean handle(CommandSender sender, Command cmd, String[] args){
 
         InfectedCommand command=CommandHandler.getCommand(cmd.getName());
 
         if(command==null){
-            Message.get("unknown_command")
-                    .replace("%command%", cmd.getName())
-                    .sendTo(sender);
+            return false;
         }else if((sender instanceof Player)&&!(command.isConsole())){
-            Message.get("no_console_access")
-                    .sendTo(sender);
+            return true;
         }else if(!(sender.hasPermission(command.getPermission()))){
             Message.get("no_permission")
                     .replace("%command%", cmd.getName())
                     .replace("%permission%", command.getPermission())
                     .sendTo(sender);
+            return true;
         }else{
             String[] newArgs=new String[args.length-1];
             System.arraycopy(args, 1, newArgs, 0, args.length-1);
             command.execute(sender, newArgs);
         }
-
+        return true;
     }
 
     public static List<InfectedCommand> getCommands(){

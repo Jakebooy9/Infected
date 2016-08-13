@@ -49,6 +49,7 @@ public class ArenaManager{
 
         set.close();
         statement.close();
+        connection.close();
 
         long endTime=System.currentTimeMillis();
         long totalTime=(endTime-startTime);
@@ -158,6 +159,7 @@ public class ArenaManager{
 
         set.close();
         statement.close();
+        connection.close();
 
         if(id<1){
             Infected.debug("Generated key must be greater than 0.");
@@ -200,6 +202,7 @@ public class ArenaManager{
         statement.executeQuery();
 
         statement.close();
+        connection.close();
 
         long endTime=System.currentTimeMillis();
 

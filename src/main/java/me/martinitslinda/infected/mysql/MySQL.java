@@ -27,7 +27,6 @@ public class MySQL{
         source.setUsername(plugin.getSettings().getUser());
         source.setPassword(plugin.getSettings().getPassword());
         source.setMaximumPoolSize(10);
-        source.setLeakDetectionThreshold(5000L);
 
         return source.getConnection();
     }

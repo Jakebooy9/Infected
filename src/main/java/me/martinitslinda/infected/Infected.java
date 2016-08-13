@@ -1,13 +1,17 @@
 package me.martinitslinda.infected;
 
+import de.robingrether.idisguise.api.DisguiseAPI;
 import me.martinitslinda.infected.arena.ArenaManager;
+import me.martinitslinda.infected.command.CommandHandler;
 import me.martinitslinda.infected.exception.ArenaException;
+import me.martinitslinda.infected.listener.DeathListener;
+import me.martinitslinda.infected.listener.JoinListener;
+import me.martinitslinda.infected.listener.RespawnListener;
 import me.martinitslinda.infected.mysql.MySQL;
-import me.martinitslinda.infected.player.InfectedPlayer;
-import me.martinitslinda.infected.player.PlayerManager;
 import me.martinitslinda.infected.util.Settings;
-import me.martinitslinda.infected.util.Message;
-
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,10 +23,9 @@ import java.util.logging.Level;
 public class Infected extends JavaPlugin{
 
     private static Infected plugin;
-
     private boolean errorOnStartup;
-
     private Settings settings;
+    private DisguiseAPI disguiseAPI;
 
     public static Infected getPlugin(){
         return plugin;
@@ -33,16 +36,7 @@ public class Infected extends JavaPlugin{
     }
 
     public static void debug(String message){
-
-        if(Infected.getPlugin().getSettings().isDebugging())
-            Infected.getPlugin().getLogger().log(Level.INFO, message);
-
-        PlayerManager.getOnlinePlayers().stream()
-                .filter(InfectedPlayer::isDebugging)
-                .forEach(player -> Message.get("debug_message_format")
-                        .replace("%message%", message)
-                        .sendTo(player.getPlayer()));
-
+        Infected.getPlugin().getLogger().log(Level.INFO, message);
     }
 
     @Override
@@ -50,6 +44,7 @@ public class Infected extends JavaPlugin{
         setPlugin(this);
 
         settings=new Settings();
+
         getSettings().load();
 
         try(Connection connection=MySQL.getConnection()){
@@ -135,6 +130,8 @@ public class Infected extends JavaPlugin{
             return;
         }
 
+        setDisguiseAPI(getServer().getServicesManager().getRegistration(DisguiseAPI.class).getProvider());
+
         try{
             ArenaManager.downloadArenas();
         }
@@ -142,18 +139,44 @@ public class Infected extends JavaPlugin{
             e.printStackTrace();
         }
 
-        final PluginManager pm=getServer().getPluginManager();
+        debug("Registering commands...");
 
+
+        debug("Registering events...");
+
+        PluginManager pm=getServer().getPluginManager();
+        pm.registerEvents(new DeathListener(), this);
+        pm.registerEvents(new JoinListener(), this);
+        pm.registerEvents(new RespawnListener(), this);
+
+        debug("Registered "+HandlerList.getRegisteredListeners(this).size()+" listeners.");
     }
 
     @Override
     public void onDisable(){
 
+        if(getDisguiseAPI()!=null){
+            getDisguiseAPI().undisguiseAll();
+        }
+
         MySQL.close();
 
     }
 
+    public DisguiseAPI getDisguiseAPI(){
+        return disguiseAPI;
+    }
+
+    public void setDisguiseAPI(DisguiseAPI disguiseAPI){
+        this.disguiseAPI=disguiseAPI;
+    }
+
     public Settings getSettings(){
         return settings;
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args){
+        return command.getName().equalsIgnoreCase("infected")&&CommandHandler.handle(sender, command, args);
     }
 }

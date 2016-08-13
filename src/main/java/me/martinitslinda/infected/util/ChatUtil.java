@@ -1,6 +1,6 @@
 package me.martinitslinda.infected.util;
 
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 public class ChatUtil{
 

@@ -31,17 +31,14 @@ public class Settings{
         cfg.put("messages.no_console_access", "&cThe console cannot perform this command.");
         cfg.put("messages.no_permission", "&cYou don't have permission to do that.");
 
-        //When this goes on the live servers I want to check it starts up as it should.
-        cfg.put("console_debugging", true);
-
-        cfg.put("version", plugin.getDescription().getVersion());
-
         cfg.entrySet().stream()
                 .filter(e->!(config.contains(e.getKey())))
                 .forEach(e -> {
                     Infected.debug("Config entry \""+e.getKey()+"\" not found, setting key and value...");
                     config.set(e.getKey(), e.getValue());
                 });
+
+        config.set("version", plugin.getDescription().getVersion());
 
         Infected.debug("Saving and reloading server config...");
 

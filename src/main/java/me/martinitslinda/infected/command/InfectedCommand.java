@@ -14,7 +14,6 @@ public abstract class InfectedCommand{
         this.name=name;
         this.permission=permission;
         this.console=console;
-        register();
     }
 
     public abstract void execute(CommandSender sender, String[] args);

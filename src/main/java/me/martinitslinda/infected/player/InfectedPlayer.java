@@ -1,6 +1,6 @@
 package me.martinitslinda.infected.player;
 
-
+import me.martinitslinda.infected.Infected;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
@@ -20,7 +20,6 @@ public class InfectedPlayer{
     private int level;
     private int prestigeLevel;
 
-    private boolean isInfected;
     private boolean isSpectating;
     private boolean isDebugging;
 
@@ -107,14 +106,6 @@ public class InfectedPlayer{
         this.prestigeLevel=prestigeLevel;
     }
 
-    public boolean isInfected(){
-        return isInfected;
-    }
-
-    public void setInfected(boolean infected){
-        isInfected=infected;
-    }
-
     public boolean isSpectating(){
         return isSpectating;
     }
@@ -165,7 +156,6 @@ public class InfectedPlayer{
     }
 
     public void reset(){
-        setInfected(false);
         setSpectating(false);
 
         Player player=getPlayer();
@@ -179,11 +169,33 @@ public class InfectedPlayer{
         player.setFlying(false);
         player.setAllowFlight(false);
         player.setFireTicks(0);
+        player.eject();
 
         Entity entity=player.getPassenger();
         if(entity!=null){
             entity.eject();
         }
+
+        if(Infected.getPlugin().getDisguiseAPI()!=null){
+            Infected.getPlugin().getDisguiseAPI().undisguiseAll();
+        }
+
+    }
+
+    public void addKill(){
+        setKills(getKills()+1);
+    }
+
+    public void addDeath(){
+        setDeaths(getDeaths()+1);
+    }
+
+    public void addWin(){
+        setWins(getWins()+1);
+    }
+
+    public void addLoss(){
+        setLosses(getLosses()+1);
     }
 
 }
