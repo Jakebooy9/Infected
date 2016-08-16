@@ -26,7 +26,7 @@ public class MySQL{
         source.setJdbcUrl(plugin.getSettings().getJdbcUrl());
         source.setUsername(plugin.getSettings().getUser());
         source.setPassword(plugin.getSettings().getPassword());
-        source.setMaximumPoolSize(10);
+        source.setMaximumPoolSize(15);
 
         return source.getConnection();
     }

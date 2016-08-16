@@ -31,39 +31,62 @@ public class DeathListener implements Listener{
 
             InfectedPlayer player=PlayerManager.getPlayer(event.getEntity());
 
+            InfectedPlayer killer=player.getLastDamager();
+            if(killer!=null){
+                killer.addKill();
+                killer.addInfection();
+                killer.addExperience(250L);
+            }
+
             Infected.debug("Adding death, resetting kill streak and resetting last damager...");
+
             player.addDeath();
             player.setLastDamager(null);
             player.setKillStreak(0);
 
             try{
                 Infected.debug("Retrieving current Bukkit version...");
+
                 String bukkitVersion=Bukkit.getServer().getClass()
                         .getPackage().getName().substring(23);
+
                 Infected.debug("Server is currently running CraftBukkit version "+bukkitVersion+".");
                 Infected.debug("Retrieving required classes...");
+
                 Class<?> cp=Class.forName("org.bukkit.craftbukkit."
                         +bukkitVersion+".entity.CraftPlayer");
                 Class<?> clientCmd=Class.forName("net.minecraft.server."
                         +bukkitVersion+".PacketPlayInClientCommand");
                 Class enumClientCMD=Class.forName("net.minecraft.server."
                         +bukkitVersion+".PacketPlayInClientCommand$EnumClientCommand");
+
                 Infected.debug("Retrieving player handle...");
-                Method handle=cp.getDeclaredMethod("getHandle", null);
+
+                Method handle=cp.getDeclaredMethod("getHandle");
+
                 Infected.debug("Invoking handle...");
-                Object entityPlayer=handle.invoke(player.getPlayer(), null);
-                Infected.debug("Getting constructor for "+clientCmd.getName()+"...");
+
+                Object entityPlayer=handle.invoke(player.getPlayer());
+
+                Infected.debug("Getting declared constructor for "+clientCmd.getClass().getName()+"...");
+
                 Constructor<?> packetConstr=clientCmd
                         .getDeclaredConstructor(enumClientCMD);
                 Enum<?> num=Enum.valueOf(enumClientCMD, "PERFORM_RESPAWN");
+
                 Infected.debug("Creating a new instance of "+packetConstr.getName()+"...");
+
                 Object packet=packetConstr.newInstance(num);
+
                 Infected.debug("Retrieving player connection...");
+
                 Object playerConnection=entityPlayer.getClass()
                         .getDeclaredField("playerConnection").get(entityPlayer);
                 Method send=playerConnection.getClass().getDeclaredMethod("a",
                         clientCmd);
+
                 Infected.debug("Forcing player respawn...");
+
                 send.invoke(playerConnection, packet);
             }
             catch(InstantiationException|InvocationTargetException|IllegalAccessException|

@@ -23,6 +23,7 @@ import java.util.logging.Level;
 public class Infected extends JavaPlugin{
 
     private static Infected plugin;
+
     private boolean errorOnStartup;
     private Settings settings;
     private DisguiseAPI disguiseAPI;
@@ -43,8 +44,6 @@ public class Infected extends JavaPlugin{
     public void onLoad(){
         setPlugin(this);
 
-        settings=new Settings();
-
         getSettings().load();
 
         try(Connection connection=MySQL.getConnection()){
@@ -64,6 +63,7 @@ public class Infected extends JavaPlugin{
                         "playersInfected INT (11) NOT NULL DEFAULT '0', "+
                         "timesInfected INT (11) NOT NULL DEFAULT '0', "+
                         "level INT (11) NOT NULL DEFAULT '0', "+
+                        "totalExperience BIGINT(11) NOT NULL DEFAULT '0', "+
                         "prestigeLevel INT (11) NOT NULL DEFAULT '0',"+
                         "totalPlayTime BIGINT (64) NOT NULL DEFAULT '0'";
                 String statement="CREATE TABLE infected_stats ("+values+");";
@@ -130,8 +130,6 @@ public class Infected extends JavaPlugin{
             return;
         }
 
-        setDisguiseAPI(getServer().getServicesManager().getRegistration(DisguiseAPI.class).getProvider());
-
         try{
             ArenaManager.downloadArenas();
         }
@@ -141,15 +139,17 @@ public class Infected extends JavaPlugin{
 
         debug("Registering commands...");
 
+        debug("Registered "+CommandHandler.getCommands().size()+" commands.");
 
         debug("Registering events...");
 
         PluginManager pm=getServer().getPluginManager();
+
         pm.registerEvents(new DeathListener(), this);
         pm.registerEvents(new JoinListener(), this);
         pm.registerEvents(new RespawnListener(), this);
 
-        debug("Registered "+HandlerList.getRegisteredListeners(this).size()+" listeners.");
+        debug("Registered "+HandlerList.getRegisteredListeners(this).size()+" events.");
     }
 
     @Override
@@ -160,18 +160,19 @@ public class Infected extends JavaPlugin{
         }
 
         MySQL.close();
-
     }
 
     public DisguiseAPI getDisguiseAPI(){
+        if(disguiseAPI==null){
+            disguiseAPI=getServer().getServicesManager().getRegistration(DisguiseAPI.class).getProvider();
+        }
         return disguiseAPI;
     }
 
-    public void setDisguiseAPI(DisguiseAPI disguiseAPI){
-        this.disguiseAPI=disguiseAPI;
-    }
-
     public Settings getSettings(){
+        if(settings==null){
+            settings=new Settings();
+        }
         return settings;
     }
 

@@ -1,6 +1,6 @@
 package me.martinitslinda.infected.player;
 
-import me.martinitslinda.infected.event.PlayerKilledEvent;
+import me.martinitslinda.infected.Infected;
 import me.martinitslinda.infected.mysql.MySQL;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -38,6 +38,8 @@ public class PlayerManager{
             return players.get(uuid);
         }
 
+        Infected.debug("Retrieving stats for '"+uuid+"'.");
+
         InfectedPlayer pl=new InfectedPlayer(uuid);
 
         Connection connection=null;
@@ -55,7 +57,8 @@ public class PlayerManager{
             while(set.next()){
 
                 if(found){
-                    throw new SQLException("Found multiple results for '"+uuid+"'");
+                    Infected.debug("Found multiple results for '"+uuid+"'.");
+                    throw new SQLException("Found multiple results for '"+uuid+"'.");
                 }
 
                 found=true;
@@ -65,12 +68,15 @@ public class PlayerManager{
                 pl.setPlayersInfected(set.getInt("playersInfected"));
                 pl.setTimesInfected(set.getInt("timesInfected"));
                 pl.setLevel(set.getInt("level"));
+                pl.setExperience(set.getLong("experience"));
                 pl.setPrestigeLevel(set.getInt("prestigeLevel"));
                 pl.setTotalPlayTime(set.getLong("totalPlayTime"));
 
             }
 
             if(!(found)){
+
+                Infected.debug("'"+uuid+"' not found in database records, creating database entry...");
 
                 statement=connection.prepareStatement("INSERT INTO infected_stats (uuid, username) VALUES (?, ?);");
                 statement.setString(1, uuid.toString());
@@ -84,6 +90,9 @@ public class PlayerManager{
             e.printStackTrace();
         }
         finally{
+
+            Infected.debug("Closing resources...");
+
             if(set!=null){
                 try{
                     set.close();
@@ -112,11 +121,14 @@ public class PlayerManager{
             }
         }
 
+        Infected.debug("Adding '"+uuid+"' to player cache...");
+
         players.put(uuid, pl);
         return pl;
     }
 
     public static Set<InfectedPlayer> getOnlinePlayers(){
-        return Bukkit.getOnlinePlayers().stream().map((Function<Player, InfectedPlayer>) PlayerManager::getPlayer).collect(Collectors.toSet());
+        return Bukkit.getOnlinePlayers().stream()
+                .map((Function<Player, InfectedPlayer>) PlayerManager::getPlayer).collect(Collectors.toSet());
     }
 }

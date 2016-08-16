@@ -23,6 +23,8 @@ public class InfectedPlayer{
     private boolean isSpectating;
     private boolean isDebugging;
 
+    private float experience;
+
     private long totalPlayTime;
     private long joinTime;
 
@@ -138,8 +140,12 @@ public class InfectedPlayer{
         this.joinTime=joinTime;
     }
 
-    public UUID getUuid(){
-        return uuid;
+    public float getExperience(){
+        return experience;
+    }
+
+    public void setExperience(float experience){
+        this.experience=experience;
     }
 
     public Player getPlayer(){
@@ -155,7 +161,7 @@ public class InfectedPlayer{
         this.lastDamager=lastDamager;
     }
 
-    public void reset(){
+    public void resetState(){
         setSpectating(false);
 
         Player player=getPlayer();
@@ -196,6 +202,22 @@ public class InfectedPlayer{
 
     public void addLoss(){
         setLosses(getLosses()+1);
+    }
+
+    public void addInfection(){
+        setPlayersInfected(getPlayersInfected()+1);
+    }
+
+    public void addLevel(){
+        setLevel(getLevel()+1);
+    }
+
+    public void addExperience(float experience){
+        getPlayer().setExp(getPlayer().getExp()+experience);
+        if(getPlayer().getLevel()>getLevel()){
+            setLevel(getPlayer().getLevel());
+            setExperience(getPlayer().getExp());
+        }
     }
 
 }
