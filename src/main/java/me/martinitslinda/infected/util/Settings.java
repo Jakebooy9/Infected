@@ -33,10 +33,7 @@ public class Settings{
 
         cfg.entrySet().stream()
                 .filter(e->!(config.contains(e.getKey())))
-                .forEach(e -> {
-                    Infected.debug("Config entry \""+e.getKey()+"\" not found, setting key and value...");
-                    config.set(e.getKey(), e.getValue());
-                });
+                .forEach(e->config.set(e.getKey(), e.getValue()));
 
         config.set("version", plugin.getDescription().getVersion());
 
@@ -71,10 +68,6 @@ public class Settings{
 
     public String getPassword(){
         return config.getString("mysql.password");
-    }
-
-    public boolean isDebugging(){
-        return config.getBoolean("console_debugging");
     }
 
 }

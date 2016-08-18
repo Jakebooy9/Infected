@@ -6,7 +6,6 @@ import me.martinitslinda.infected.arena.ArenaManager;
 import me.martinitslinda.infected.team.Team;
 import me.martinitslinda.infected.util.Message;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -14,8 +13,6 @@ public class GameManager{
 
     private static GameState state;
     private static int ticks;
-
-    private static BukkitRunnable runnable;
 
     public static void startGame(Arena arena){
 
@@ -41,21 +38,19 @@ public class GameManager{
             throw new IllegalStateException("The arenas x, y, z co-ordinates must be greater than 0.");
         }
 
-        setRunnable(new BukkitRunnable(){
-            @Override
-            public void run(){
-                doTick();
-            }
-        });
-
-        getRunnable().runTaskTimer(Infected.getPlugin(), 0L, 20L);
-
     }
 
     public static void endGame(Team winner){
 
-        getRunnable().cancel();
+    }
 
+    public static void init(){
+        new BukkitRunnable(){
+            @Override
+            public void run(){
+                doTick();
+            }
+        }.runTaskTimer(Infected.getPlugin(), 0L, 20L);
     }
 
     private static void doTick(){
@@ -69,8 +64,6 @@ public class GameManager{
                     Message.get("start_game_countdown")
                             .replace("%remaining%", getTicks())
                             .sendTo(player);
-
-                    player.playSound(player.getLocation(), Sound.CLICK, 1, 1);
 
                     for(Arena arena : ArenaManager.getSelection()){
                         Message.get("arena_list_format")
@@ -89,7 +82,7 @@ public class GameManager{
 
         }else if(getState()==GameState.INFECTION){
 
-            if(getTicks()<=5){
+            if(getTicks()<=5&&getTicks()>0){
 
             }else if(getTicks()==0){
 
@@ -119,11 +112,4 @@ public class GameManager{
         GameManager.ticks=ticks;
     }
 
-    public static BukkitRunnable getRunnable(){
-        return runnable;
-    }
-
-    public static void setRunnable(BukkitRunnable runnable){
-        GameManager.runnable=runnable;
-    }
 }

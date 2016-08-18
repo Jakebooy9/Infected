@@ -12,26 +12,17 @@ public class MySQL{
     private static Infected plugin=Infected.getPlugin();
 
     public static Connection getConnection() throws SQLException{
-        try{
-            if(source!=null&&!source.isClosed()){
-                return source.getConnection();
-            }
-        }
-        catch(SQLException e){
-            e.printStackTrace();
-        }
-
-        source=new HikariDataSource();
-
-        source.setJdbcUrl(plugin.getSettings().getJdbcUrl());
-        source.setUsername(plugin.getSettings().getUser());
-        source.setPassword(plugin.getSettings().getPassword());
-        source.setMaximumPoolSize(15);
-
-        return source.getConnection();
+        return getSource().getConnection();
     }
 
     public static HikariDataSource getSource(){
+        if(source==null||source.isClosed()){
+            source=new HikariDataSource();
+            source.setJdbcUrl(plugin.getSettings().getJdbcUrl());
+            source.setUsername(plugin.getSettings().getUser());
+            source.setPassword(plugin.getSettings().getPassword());
+            source.setMaximumPoolSize(30);
+        }
         return source;
     }
 
@@ -40,7 +31,7 @@ public class MySQL{
     }
 
     public static void close(){
-        if(getSource()!=null&&!getSource().isClosed()){
+        if((source!=null)&&!source.isClosed()){
             getSource().close();
         }
         setSource(null);

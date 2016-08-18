@@ -161,7 +161,8 @@ public class Infected extends JavaPlugin{
     public void onDisable(){
 
         if(GameManager.getState()==GameState.INFECTION||GameManager.getState()==GameState.INGAME){
-            getServer().dispatchCommand(getServer().getConsoleSender(), "infected forceend");
+
+            GameManager.setTicks(0);
         }
 
         if(getDisguiseAPI()!=null){
