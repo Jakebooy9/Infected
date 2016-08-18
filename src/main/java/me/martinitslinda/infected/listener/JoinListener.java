@@ -7,16 +7,29 @@ import me.martinitslinda.infected.game.GameManager;
 import me.martinitslinda.infected.game.GameState;
 import me.martinitslinda.infected.player.InfectedPlayer;
 import me.martinitslinda.infected.player.PlayerManager;
+import me.martinitslinda.infected.util.ChatUtil;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scoreboard.*;
 
 public class JoinListener implements Listener{
 
     private Infected plugin=Infected.getPlugin();
+    private static Scoreboard scoreboard;
+
+    public static void initialiseScoreboard(){
+        ScoreboardManager manager = Bukkit.getScoreboardManager();
+        scoreboard = manager.getNewScoreboard();
+        scoreboard.registerNewTeam("arenas");
+        scoreboard.registerNewTeam("stats");
+        scoreboard.registerNewObjective("arena_board", "dummy");
+        scoreboard.registerNewObjective("stats_board", "dummy");
+    }
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
@@ -33,13 +46,13 @@ public class JoinListener implements Listener{
         pl.setAllowFlight(false);
         pl.setFireTicks(0);
 
-        if(GameManager.getState()==GameState.LOBBY){
+        /*if(GameManager.getState()==GameState.LOBBY){
 
             for(Arena arena : ArenaManager.getSelection()){
 
             }
 
-        }
+        }*/
 
         Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
 
@@ -48,6 +61,15 @@ public class JoinListener implements Listener{
             if(GameManager.getState()==GameState.LOBBY){
 
                 //Load stats scoreboard.
+                if(scoreboard !=null){
+                    Objective objective = scoreboard.getObjective("arena_board");
+                    objective.setDisplayName(ChatUtil.colorize("&6&lArenas"));
+                    for(Arena arena : ArenaManager.getSelection()){
+                        int votes = arena.getVoters().size();
+                        Score score = objective.getScore(ChatColor.AQUA + arena.getName());
+                        score.setScore(votes);
+                    }
+                }
 
             }else if(GameManager.getState()==GameState.INGAME){
 

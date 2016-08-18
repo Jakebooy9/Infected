@@ -13,11 +13,15 @@ import me.martinitslinda.infected.mysql.MySQL;
 import me.martinitslinda.infected.player.InfectedPlayer;
 import me.martinitslinda.infected.player.PlayerManager;
 import me.martinitslinda.infected.util.Settings;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.ScoreboardManager;
+import org.bukkit.scoreboard.Team;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -138,9 +142,11 @@ public class Infected extends JavaPlugin{
         try{
             ArenaManager.downloadArenas();
         }
-        catch(SQLException|ArenaException e){
+        catch(SQLException|ArenaException e) {
             e.printStackTrace();
         }
+
+        JoinListener.initialiseScoreboard();
 
         debug("Registering commands...");
 
