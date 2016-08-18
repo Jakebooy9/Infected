@@ -9,8 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
@@ -18,14 +17,91 @@ import java.util.stream.Collectors;
 
 public class PlayerManager{
 
-    private static Map<UUID, InfectedPlayer> players=new HashMap<>();
+    private static Set<InfectedPlayer> players=new HashSet<>();
 
-    public static Map<UUID, InfectedPlayer> getPlayers(){
+    public static Set<InfectedPlayer> getPlayers(){
         return players;
     }
 
-    public static InfectedPlayer getPlayer(String name){
-        return null;
+    public static InfectedPlayer getPlayer(String username){
+
+        for(InfectedPlayer player : players){
+            if(player.getUuid().equals(Bukkit.getPlayer(username).getUniqueId())){
+                return player;
+            }
+        }
+
+        InfectedPlayer player=null;
+
+        Connection connection=null;
+        PreparedStatement statement=null;
+        ResultSet set=null;
+
+        try{
+            connection=MySQL.getConnection();
+            statement=connection.prepareStatement("SELECT * FROM infected_stats WHERE username = ?");
+            statement.setString(1, username);
+            set=statement.executeQuery();
+
+            boolean found=false;
+
+            while(set.next()){
+
+                if(found){
+                    Infected.debug("Found multiple results for '"+username+"'.");
+                    throw new SQLException("Found multiple results for '"+username+"'.");
+                }
+
+                player=new InfectedPlayer(Bukkit.getPlayer(username).getUniqueId());
+
+                found=true;
+
+                player.setWins(set.getInt("wins"));
+                player.setLosses(set.getInt("losses"));
+                player.setPlayersInfected(set.getInt("playerInfected"));
+                player.setTimesInfected(set.getInt("timesInfected"));
+                player.setLevel(set.getInt("level"));
+                player.setExperience(set.getLong("experience"));
+                player.setPrestigeLevel(set.getInt("prestigeLevel"));
+                player.setTotalPlayTime(set.getLong("totalPlayTime"));
+
+            }
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        finally{
+
+            if(set!=null){
+                try{
+                    set.close();
+                }
+                catch(SQLException ignored){
+
+                }
+            }
+
+            if(statement!=null){
+                try{
+                    statement.close();
+                }
+                catch(SQLException ignored){
+
+                }
+            }
+
+            if(connection!=null){
+                try{
+                    connection.close();
+                }
+                catch(SQLException ignored){
+
+                }
+            }
+        }
+
+        return player;
     }
 
     public static InfectedPlayer getPlayer(Player player){
@@ -34,11 +110,11 @@ public class PlayerManager{
 
     public static InfectedPlayer getPlayer(UUID uuid){
 
-        if(players.get(uuid)!=null){
-            return players.get(uuid);
+        for(InfectedPlayer player : players){
+            if(player.getUuid().equals(uuid)){
+                return player;
+            }
         }
-
-        Infected.debug("Retrieving stats for '"+uuid+"'.");
 
         InfectedPlayer pl=new InfectedPlayer(uuid);
 
@@ -91,8 +167,6 @@ public class PlayerManager{
         }
         finally{
 
-            Infected.debug("Closing resources...");
-
             if(set!=null){
                 try{
                     set.close();
@@ -121,9 +195,8 @@ public class PlayerManager{
             }
         }
 
-        Infected.debug("Adding '"+uuid+"' to player cache...");
+        players.add(pl);
 
-        players.put(uuid, pl);
         return pl;
     }
 

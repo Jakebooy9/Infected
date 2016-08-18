@@ -152,6 +152,9 @@ public class InfectedPlayer{
         return Bukkit.getPlayer(uuid);
     }
 
+    public UUID getUuid(){
+        return uuid;
+    }
 
     public InfectedPlayer getLastDamager(){
         return lastDamager;
@@ -220,4 +223,7 @@ public class InfectedPlayer{
         }
     }
 
+    public void updateStats(){
+
+    }
 }

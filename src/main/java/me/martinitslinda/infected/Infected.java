@@ -4,10 +4,14 @@ import de.robingrether.idisguise.api.DisguiseAPI;
 import me.martinitslinda.infected.arena.ArenaManager;
 import me.martinitslinda.infected.command.CommandHandler;
 import me.martinitslinda.infected.exception.ArenaException;
+import me.martinitslinda.infected.game.GameManager;
+import me.martinitslinda.infected.game.GameState;
 import me.martinitslinda.infected.listener.DeathListener;
 import me.martinitslinda.infected.listener.JoinListener;
 import me.martinitslinda.infected.listener.RespawnListener;
 import me.martinitslinda.infected.mysql.MySQL;
+import me.martinitslinda.infected.player.InfectedPlayer;
+import me.martinitslinda.infected.player.PlayerManager;
 import me.martinitslinda.infected.util.Settings;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -18,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 public class Infected extends JavaPlugin{
@@ -155,8 +160,17 @@ public class Infected extends JavaPlugin{
     @Override
     public void onDisable(){
 
+        if(GameManager.getState()==GameState.INFECTION||GameManager.getState()==GameState.INGAME){
+            getServer().dispatchCommand(getServer().getConsoleSender(), "infected forceend");
+        }
+
         if(getDisguiseAPI()!=null){
             getDisguiseAPI().undisguiseAll();
+        }
+
+        for(Iterator<InfectedPlayer> it=PlayerManager.getPlayers().iterator(); it.hasNext(); ){
+            it.next().updateStats();
+            it.remove();
         }
 
         MySQL.close();

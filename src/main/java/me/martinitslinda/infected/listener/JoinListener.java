@@ -5,6 +5,9 @@ import me.martinitslinda.infected.arena.Arena;
 import me.martinitslinda.infected.arena.ArenaManager;
 import me.martinitslinda.infected.game.GameManager;
 import me.martinitslinda.infected.game.GameState;
+import me.martinitslinda.infected.player.InfectedPlayer;
+import me.martinitslinda.infected.player.PlayerManager;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,17 +21,17 @@ public class JoinListener implements Listener{
     @EventHandler
     public void onJoin(PlayerJoinEvent event){
 
-        Player player=event.getPlayer();
+        Player pl=event.getPlayer();
 
-        player.setMaxHealth(20);
-        player.setHealth(20);
-        player.setFoodLevel(20);
-        player.getInventory().clear();
-        player.getInventory().setArmorContents(null);
-        player.setGameMode(GameMode.ADVENTURE);
-        player.setFlying(false);
-        player.setAllowFlight(false);
-        player.setFireTicks(0);
+        pl.setMaxHealth(20);
+        pl.setHealth(20);
+        pl.setFoodLevel(20);
+        pl.getInventory().clear();
+        pl.getInventory().setArmorContents(null);
+        pl.setGameMode(GameMode.ADVENTURE);
+        pl.setFlying(false);
+        pl.setAllowFlight(false);
+        pl.setFireTicks(0);
 
         if(GameManager.getState()==GameState.LOBBY){
 
@@ -37,6 +40,22 @@ public class JoinListener implements Listener{
             }
 
         }
+
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
+
+            InfectedPlayer player=PlayerManager.getPlayer(pl.getUniqueId());
+
+            if(GameManager.getState()==GameState.LOBBY){
+
+                //Load stats scoreboard.
+
+            }else if(GameManager.getState()==GameState.INGAME){
+
+                //Load game stats scoreboard.
+
+            }
+
+        });
 
     }
 
